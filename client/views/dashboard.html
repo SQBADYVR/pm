@@ -1,0 +1,28 @@
+<template name="dashboard">
+{{enterDashboard}}
+<div class="row">
+
+<div id="slidein-panel" class="left-side-panel-open">
+<div id="slidein-panel-list">
+<ul class="list-group">
+  <li class="list-group-item">My Projects:</li>
+	{{#each projectICanSee}}
+  	<li class="list-group-item">{{projectName}}</li>
+	{{/each}}
+	<li class="list-group-item"><div id="createProject">
+      <input type="text" id="new-project" placeholder="Create New Project" />
+	</div>
+	</li>
+</ul>
+</div>
+<div id="slidein-panel-btn" class="btn-group">
+<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-list"></span>
+</button>
+</div>
+</div>
+
+<div id="main-panel">
+Dashboard placeholder
+</div>
+</div>
+</template>

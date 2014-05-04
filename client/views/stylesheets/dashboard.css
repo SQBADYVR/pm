@@ -1,0 +1,20 @@
+#slidein-panel-btn, #slidein-panel,#slidein-panel-list, #main-panel {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#slidein-panel
+{
+transition-property:width;
+-moz-transition-property: width; /* Firefox 4 */
+-webkit-transition-property:width; /* Safari and Chrome */
+-o-transition-property:width; /* Opera */
+}
+
+.left-side-panel-open {
+	left: 0;
+}
+
+.left-side-panel-closed {
+	left: -200px;
+}

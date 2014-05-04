@@ -1,0 +1,25 @@
+ <head>
+ <title>cloudDesign&#8482;: Design Tools for Teams</title>
+</head>
+
+<template name="main">
+{{#if currentUser}}
+{{> dashboard}}
+{{else}}
+{{>welcome}}
+{{/if}}
+</template>
+
+
+<template name="welcome">
+ 
+<div class="jumbotron text-info">
+  <h1>Welcome to cloudDesign&#8482;</h1>
+  <p>This tool suite has been designed from the ground up with making designing new products easy for globally distributed teams.</p>
+  <p>It is currently available only in a pre-Alpha release state.  Once we work out the bugs and harden security, the intent is to release it for Beta users.</p>
+  <p>At this point, do not put any confidential or private information into the system.  Just try it.  And give us feedback on what needs improved.</p>
+
+  <p>If you accept our <a href="/termsofuse">terms and conditions</a>, then please sign up and give it a test drive.</p>
+</div>
+
+</template>
