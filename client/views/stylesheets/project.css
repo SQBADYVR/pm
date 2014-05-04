@@ -1,0 +1,53 @@
+.projectPermissions {
+	float: right;
+	display: inline;
+	margin-top: 2px;
+}
+
+.userNames, .destroyUser, .displayUser {
+	display: inline;
+	vertical-align: middle;
+}
+
+ul {
+	list-style: none;
+}
+
+li.userRow {
+	border-top: solid 1px #333333;
+	margin-bottom: 2px;
+}
+
+.permission-wrapper {
+	width: 90%;
+	margin-left: 5%;
+	padding: 2px;
+}
+
+span.glyphicon {
+	font-size: 1em;
+}
+
+.lineWrapper {
+	vertical-align: middle;
+	display: inline;
+
+}
+
+.myColleagues {
+	height: 300px;
+	overflow: auto;
+}
+
+.big-glyphs {
+	font-size: 2.5em !important;
+}
+
+.selectedProject {
+	font-weight: bold;
+	background: #9be;
+}
+
+div.projectNames :hover {
+	background-color: #9be;
+}

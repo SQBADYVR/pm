@@ -1,0 +1,139 @@
+<template name="manageAccount">
+	<div class="row">
+		<div class="panel panel-default">
+ 			<div class="panel-heading">Account settings</div>
+  			<div class="panel-body">
+				<div class="col-sm-4">
+			<ul class="list-group">
+			<li class="list-group-item">
+			Username: {{name}}
+			</li>
+			<li class="list-group-item first-name-edit">
+			<span>First name: </span>
+			{{#if editFirstName}}
+			<div class="form-group inline-form">
+			<input type="text" class="form-control form-inline" id="editFirstName" placeholder="Enter first name">
+			</div>	
+			{{else}}
+			{{firstName}}
+			{{/if}}
+			</li>
+			<li class="list-group-item last-name-edit">
+			<span>Last name: </span>
+			{{#if editLastName}}
+			<div class="form-group inline-form">
+			<input type="text" class="form-control form-inline" id="editLastName" placeholder="Enter last name">
+			</div>	
+			{{else}}
+			{{lastName}}
+			{{/if}}
+			</li>
+			<li class="list-group-item">
+			email: {{email}}
+			</li>
+			<li class="list-group-item">
+			Company name: {{companyName}}
+			</li>
+			<li class="list-group-item">
+			Contact address: {{address}}
+			</li>
+			<li class="list-group-item">
+			Contact phone: {{phoneNumber}}
+			</li>
+			</ul>
+		</div>
+		<div class="col-sm-4">
+			<h5>Privacy Settings</h5>
+			<ul class="list-group">
+			<li class="list-group-item">
+			<span><input id="autoAcceptInvite" type="checkbox" {{autoAcceptInvite}}>  Automatically accept invitations from emails with your same domain name ({{myDomainName}})</span>
+			</li>
+			<li class="list-group-item">
+			<span><input id="shareEmailOnProjects" type="checkbox" class="list-checkbox" {{autoAcceptInvite}}>  Allow people on projects with me to see my name and email.  (Recommended)</span>
+			</li>		
+			</ul>
+		</div>
+		<div class="col-sm-4">
+			<h5>Subscription Status</h5>
+			<ul class="list-group">
+			<li class="list-group-item">
+			{{Subscriber}}
+			</li>
+			<li class="list-group-item">
+			Placeholder for payment information.
+			</li>
+			</ul>
+		</div>
+	</div>
+	</div>
+	</div>
+	<div class="row">
+  		<div class="panel panel-default">
+   			<div class="panel-heading">
+      			<h4 class="panel-title">
+        			<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          			My network of colleagues (click to expand/collapse)
+        			</a>
+		      	</h4>
+		    </div>
+    		<div id="collapseTwo" class="panel-collapse collapse">
+      			<div class="panel-body">
+					<div class="col-sm-4">
+						<h4>Invite someone to become a colleague</h4>
+						<form class="form-inline" role="form">
+  							<div class="form-group">
+   								<label class="sr-only" for="newInvitation">Invite someone to become a colleague:</label>
+			    				<input type="text" class="form-control" id="newInvitation" placeholder="Enter username or email">
+    							<span class="help-block">For security reasons, you will not see any information about other users until they accept your invitation.  When you send the invitation, the receipient will see your username, email, and/or name.  Please check email address carefully before submitting.</span>
+							</div>
+						</form>
+						<h4>Invitations I Have Sent</h4>
+						<ul class="list-group">
+							{{#each usersIveInvited}}
+							<li class="list-group-item">
+							<div class="invitee">
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-rescind-invitation">Cancel</button>
+								</div>
+							{{listInvited}}	 	
+							</div>
+							</li>
+							{{/each}}
+						</ul>
+					</div>
+					<div class="col-sm-4">
+						<h4>Invitations I Have Received</h4>
+						<ul class="list-group">
+							{{#each invitedUser}}
+							<li class="list-group-item">
+								<div class="invitee">
+									{{invitedMeNameOrEmail}}
+									<div class="btn-group">
+							 			<button type="button" class="btn btn-default btn-accept-invite">Accept Invitation</button>
+										<button type="button" class="btn btn-default btn-reject-invite">Reject Invitation</button>
+									</div>	
+								</div>
+							</li>
+							{{/each}}
+						</ul>
+					</div>
+					<div class="col-sm-4">
+						<h4>My Colleagues</h4>
+							<ul class="list-group colleague-list">
+								{{#each colleague}}
+								<li class="list-group-item">
+									<div class="colleague">
+									{{nameOrEmail}}
+										<div class="btn-group btn-remove-colleague">
+											<button type="button" class="btn btn-default ">Remove</button>
+										</div> 
+									</div>
+								</li>
+								{{/each}}
+							</ul>
+					</div>
+				</div>
+	      	</div>
+    	</div>
+  	</div>
+</template>

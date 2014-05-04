@@ -1,29 +1,186 @@
 <template name="manageProject">
+  <div class="modal fade" id="checkAdminDelete">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h4 class="modal-title"><div class="alert alert-danger">Warning:  You are deleting your own administrator access!</div></h4>
+      </div>
+      <div class="modal-body">
+        <p>You have chosen to delete your own administrator access.  Please confirm, as you will not be able to restore it without the actions of another administrator.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="cancelDelete" data-dismiss="modal">Cancel This Action</button>
+        <button type="button" id="confirmDelete" class="btn btn-primary" data-dismiss="modal">Confirm This Action</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="needOneAdmin">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h4 class="modal-title"><div class="alert alert-danger">Warning:  At least one administrator must be active.</div></h4>
+      </div>
+      <div class="modal-body">
+        <p>You must promote someone on the team to administrator before deleting yourself.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="warning" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" id="helpOnProjects">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h4 class="modal-title"><div class="alert alert-info">How To Use Projects</div></h4>
+      </div>
+      <div class="modal-body">
+        <p>This is where you set up a project, which is a collection of related documents (Requirements, DFMEA, PFMEA, etc.) used by one team.</p>
+        <p>Enter a project name in the space provided.  Note that this will show up in quick-links throughout cloudDesign, so it is recommended to make the name something you will associate with this project, rather than something like "New Project".</p>
+        <p>Choose whether to make this a public or private project.  Public projects are free to store and edit, as they support the open-source community.  All data on a public project is visible to <strong>any</strong> cloudDesign user.  Propriety projects should be made 'private'.  However, this will require all users except 'view-only' users to be paid subscribers to cloudDesign.  Note that if a project starts out as a public project and is later coverted to a private project, an archive of that project is kept available as a public project.</p>
+        <p>Add members to your project team.  These members can be chosen by userid or by email address, or they can be selected by clicking the right arrow next to the users on your list of colleagues and/or your pre-established teams.  You can easily set permissions with a button click on each project member or team to show what rights they have: <ul><li>Admin:  Can update all aspects of the project, including permissions.  There must always be at least one admin for a project.</li><li>Editor:  Can edit the project contents, unless otherwise prevented by document-level permissions.</li><li>Download:  Can download the entire project file, including all documents.  Note that for public projects, this cannot be disabled.</li><li>Print:  Can print the project documents.  Note that view-only members can still do screen captures.</li><li>View:  Can see the project contents.  This permission is intended for people who need to audit the project data, but do not need detailed access.</li></ul></p>
+        <p>Green permissions mean the user has that permission.  Yellow means the user has not acknowledged your invitation to be a teammate yet, but you have granted him/her that permission.  No color indicates the user does not have that permission.  For public projects, the download, print, and view buttons cannot be changed, but are shown green as a reminder.</p>
+        <p>All team members must be a colleague of at least one administrator.  If they are not your colleague, you will see the words "hidden user" where their username or email would be.</p>
+        </div>
+      <div class="modal-footer">
+        <button type="button" id="warning" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 {{enterManageProjects}}
-{{enterManageProjects2}}
+<div class="container-fluid">
 <div class="row">
 
-<div id="slidein-panel" class="left-side-panel-open">
-<div id="slidein-panel-list">
+<div id="slidein-panel" class="left-side-panel-open col-sm-3">
+<div id="slidein-panel-list" >
 <ul class="list-group">
+{{#if anyProjects}}
   <li class="list-group-item">My Projects:</li>
-	{{#each projectICanSee}}
-  	<li class="list-group-item">{{projectName}}</li>
-	{{/each}}
-	<li class="list-group-item"><div id="createProject">
-      <input type="text" id="new-project" placeholder="Create New Project" />
+	{{#each projectsICanSee}}
+	<div class="projectNames">
+		{{#if editing}}
+			<li class="list-group-item projectListGroupItem {{selectedProject}}">
+				<input type="text" id="editProjectName" placeholder="{{projectName}}" />
+			</li>
+		{{else}}
+  			<li class="list-group-item {{selectedProject}}">{{projectName}}</li>
+  		{{/if}}
 	</div>
+	{{/each}}
+{{/if}}
+	<li class="list-group-item">
+      <input type="text" id="createNewProject" placeholder="Create New Project" />
 	</li>
 </ul>
 </div>
-<div id="slidein-panel-btn" class="btn-group">
-<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-list"></span>
-</button>
-</div>
+
 </div>
 
-<div id="main-panel">
-Dashboard placeholder
+<div id="main-panel" class="col-sm-9">
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#Content" data-toggle="tab">Content</a></li>
+  <li><a href="#settings" data-toggle="tab">Settings</a></li>
+  {{#if adminsProject}}
+  <li><a href="#permissions" data-toggle="tab">Users and Permissions</a></li>
+  {{/if}}
+</ul>
+<div class="tab-content row">
+  <div class="tab-pane active" id="Content">
+  		<div class="panel-body-header">
+  		<h4>Project Documents:</h4>
+  		</div>
+		<div class="panel-body">
+       		{{#each listOfDocuments}}
+       		<div>
+      		 <a class="btn btn-link btn-lg" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block">{{docName}}</span></a>
+      		 </div>
+      		 {{/each}}
+      	</div>
+  </div>
+  <div class="tab-pane" id="settings">
+  		Project Administrators:  
+
+  </div>
+  <div class="tab-pane" id="permissions">
+  <div class="row">
+  	<div class="col-sm-8">
+    <h4>Project Members</h4>
+    <div class="addProjectUsers">
+	    Enter name or email to invite users to your project, or enter an existing team name to add a team of users.
+	    You may also select by clicking on a Team or Colleague from the lists shown.
+        <form class="form-inline" role="form">
+        <div class="form-group addUsers">
+            <label class="sr-only" for="newInvitation">Invite someone to join the project:</label>
+            <input type="text" class="form-control user-name-input" id="project-user-name-input" placeholder="Enter username, email, or team name" size="60">
+            <span class="help-block">Inviting someone to the project automatically invites them to join your list of colleagues.</span>
+        </div>
+        </form>
+    </div>
+    {{#if adminsProject}}
+    <div class="user-permissions">
+        <ul class="userNames">
+        <li><div class="userNames">Project Member</div>
+        <div class="projectPermissions">Permissions (click to toggle)</div>
+        </li>
+        {{#each projectMembers}}
+     	    <li class="userRow" id="{{projectMember}}">
+      	    <div class="lineWrapper">
+      	    	{{#if isMe}}
+ 				<button type="button" class="btn btn-add btn-xs invisible"><span title="" class="glyphicon glyphicon-remove-sign"> </span></button>
+      	    	{{else}}
+    		    <div class="destroyUser">
+    		     <button type="button" class="btn btn-add btn-danger btn-xs destroyUser"><span title="Remove User From Project" class="glyphicon glyphicon-remove-sign"> </span></button>
+    		    </div>
+    		    {{/if}}
+        	    <div class="displayUser">
+            	   <div class="userNames">{{email}}</div>
+        	    </div>
+   	            <div class="projectPermissions">
+      	    	    <button type="button" class="btn btn-add btn-xs {{isAdmin}} Admin"><span title="Administrator"   class="glyphicon glyphicon-cog"> Admin</span></button>
+            	    <button type="button" class="btn btn-add  btn-xs {{canEdit}} Editor"><span title="Edit" class="   glyphicon glyphicon-pencil"> Edit</span></button>
+        		   <button type="button" class="btn btn-add  btn-xs {{canDownload}} Download"><span title="Download" class="glyphicon glyphicon-download-alt"> Download</span></button>
+        		    <button type="button" class="btn btn-add btn-xs {{canPrint}} Print"><span title="Print" class="glyphicon glyphicon-print"> Print</span></button>
+        		   <button type="button" class="btn btn-add btn-xs {{canView}} Viewer"><span title="View" class="glyphicon glyphicon-eye-open"> View</span></button>
+         		</div>
+         	</div>
+       	    </li>
+        {{/each}}
+        </ul>
+    </div>
+    {{/if}}
+    </div>
+    <div class="col-sm-4">
+    <div class="myTeams">
+    <h4>My Teams</h4>
+    <h6>(click team name to add to Project)</h6>
+    </div>
+    <h4>My Colleagues</h4><h6>(click user to add to Project)</h6>
+    <div class="myColleagues">
+      <ul class="list-group">
+      {{#each colleague}}
+        <li class="list-group-item">
+        <div class="colleague">
+            <div class="btn-group">            
+                <button type="button" class="btn btn-link btn-xs">{{nameOrEmail}}</button>
+                <button type="button" class="btn btn-default btn-xs btn-add-to-project" title="Add to Project">
+                    <span class="glyphicon glyphicon-chevron-right"></span> 
+                </button>
+            </div> 
+        </div>
+        </li>
+      {{/each}}
+      </ul>
+    </div>
+    </div>
+    </div>
+  </div>
+</div></div>
 </div>
 </div>
 </template>

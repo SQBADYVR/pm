@@ -33,6 +33,10 @@ Projects=new Meteor.Collection('projects');
 
 var projectSubscription=Meteor.subscribe('myProjects');
 var myTeam=Meteor.subscribe('colleagues');
+		
+// ID of currently selected list
+Session.setDefault('currentProject', null);
+Session.setDefault('editingProject', null);
 
 var toggleAdmin=function(myRecord) {
 	if (Accounts.loginServicesConfigured())
@@ -154,23 +158,55 @@ var defaultUserPublic=function() {
 }
 
 Template.manageProject.helpers ({
-	enterManageProject2:  function() {
+	enterManageProjects: function() {
 		Session.set("moduleName","Project Manager");
 		return null;
 	},
+	anyProjects: function() {
+		if (Projects.find({projectMembers: Meteor.userId()})) 
+			if (Projects.find({projectMembers: Meteor.userId()}).count()>0)
+				return true;
+		return false;
+	},
+	projectsICanSee: function() {
+		return Projects.find({projectMembers: Meteor.userId()});
+	},
+	editing: function() {
+		return Session.equals('editingProject', this._id);
+	},
+	selectedProject: function() {
+		return Session.equals("currentProject", this._id) ? "selectedProject" : "";
+	},
 	projectMembers: function() {
-		return this.projectMembers;
+		var currProject=Session.get("currentProject");
+		if (currProject)
+			return Projects.findOne({_id: Session.get("currentProject")}).projectMembers;
+		else return null;
 	},
 	projectMember: function() {
 		return this;
 	},
+	isMe: function() {
+		if (String(this) == Meteor.userId())
+			return true;
+		else return false;
+	},
+	adminsProject: function() {
+		if (Session.get("currentProject")) {
+			var currProj=Projects.findOne({_id:Session.get("currentProject")});
+			if (currProj)
+				return (currProj.projectAdministrators.indexOf(Meteor.userId()) >-1);
+		}
+		return false;
+	},
 	listOfDocuments: function() {
 		var retval=[];
-		var currProjectObject=this;
+		var currProject=Session.get("currentProject");
 		var tempKey=[],
 			tempKey2=[],
 			i;
-		if(currProjectObject) {
+		if(currProject) {
+			var currProjectObject=Projects.findOne({_id: currProject});
 			tempKey=[];
 			for (i=0; i<currProjectObject.DFMEAlinks.length;i++)
 				tempKey.push("Design FMEA");
@@ -384,7 +420,7 @@ Template.manageProject.helpers ({
 		return (projectSubscription.ready());
 	},	
 	colleague: function() {
-		if (Accounts.loginServicesConfigured()) {
+		if (Accounts.loginServicesConfigured() && Session.get("currentProject")) {
 			var myID=Meteor.userId();
 			if (myID) {
 				var colleagues=Meteor.user().colleagues;	//update to remove those already in the project!
@@ -405,7 +441,7 @@ Template.manageProject.helpers ({
 			}}
 		return null;
 	},
-	enterManageProject: function() {
+	createNewProject: function() {
 		//assumes called with the session variable currentProject set to the current project id.  
 		//if set to null, create a new project.
 		var currProject = Session.get("currentProject");
@@ -508,12 +544,33 @@ var activateInput = function (input) {
 };
 
 Template.manageProject.events(okCancelEvents(
-  '#project-name-input',
+  '#createNewProject',
   {
     ok: function (text, evt) {	
-      if ((text) && Accounts.loginServicesConfigured())
+      if ((text) && Accounts.loginServicesConfigured())  // may need to harden security on name of project
       {
-      	Projects.update({_id: Session.get("currentProject")},{$set: {projectName: text}});
+      	var newProject=Projects.insert(
+					{
+					projectName: text,
+					publicProject: defaultUserPublic,
+					projectDescription:"",
+					projectRevision: {major: 0, minor: 1},
+					projectArchiveLinks: [],
+					projectMembers: [Meteor.userId()],
+					projectAdministrators: [Meteor.userId()],
+					projectEditors: [Meteor.userId()],
+					projectDownload: [Meteor.userId()],
+					projectPrint: [Meteor.userId()],
+					projectView: [Meteor.userId()],
+					DFMEAlinks:[],
+					PFMEAlinks:[],
+					DVPRlinks:[],
+					RequirementsLink:[],
+					ControlPlanLinks:[],
+					PVPRlinks:[],
+					MiscDocs:[]
+					});
+		Session.set('currentProject',newProject);
       }
       evt.target.value='';
   },
@@ -522,12 +579,27 @@ Template.manageProject.events(okCancelEvents(
      }));
 
 Template.manageProject.events(okCancelEvents(
+  '#editProjectName',
+  {
+    ok: function (text, evt) {	
+      if ((text) && Accounts.loginServicesConfigured())
+      {
+      	Projects.update({_id: Session.get('currentProject')},{$set: {projectName: text}});
+      }
+      evt.target.value='';
+      Session.set('editingProject',null);
+  },
+    cancel: function () {
+  	 Session.set('editingProject',null);}
+     }));
+
+Template.manageProject.events(okCancelEvents(
   '#projectDescription',
   {
     ok: function (text, evt) {	
       if ((text) && Accounts.loginServicesConfigured())
       {
-      	Projects.update({_id: Session.get("currentProject")},{$set: {projectDescription: text}});
+      	Projects.update({_id: Session.get('currentProject')},{$set: {projectDescription: text}});
       }
       evt.target.value='';
   },
@@ -536,21 +608,23 @@ Template.manageProject.events(okCancelEvents(
      }));
 
 Template.manageProject.events ({
-  
-  'click .destroy': function () {
-    return null;
+  'dblclick .projectNames': function (evt, tmpl) { 
+    Session.set('editingProject', this._id);
+    Session.set('currentProject', this._id);
+    Deps.flush(); // force DOM redraw, so we can focus the edit field
+    activateInput(tmpl.find("#editProjectName"));
   },
-
-//  'dblclick .project-name-input': function (evt, tmpl) {
-//    Deps.flush(); // update DOM before focus
-//    activateInput(tmpl.find("#project-name-input"));
-//  },
-
-//  'dblclick .projectDescription': function (evt, tmpl) {
-//     Deps.flush(); // update DOM before focus
-//    activateInput(tmpl.find("#projectDescription"));
-//  },
-
+  'click .projectNames': function(evt) {
+  	Session.set('currentProject',this._id);
+  },
+  'click .destroyUser': function (evt) {
+  	if (this)
+  	{
+  	var userToDelete=String(this);
+	Projects.update({_id:Session.get("currentProject")},{$pull:{projectAdministrators: userToDelete, projectEditors: userToDelete, projectDownload: userToDelete,projectPrint: userToDelete,projectView: userToDelete, projectMembers: userToDelete}});
+	}
+	else return null;
+  },
   'click .Admin': function() {
   	return toggleAdmin(this);
   },
@@ -573,7 +647,6 @@ Template.manageProject.events ({
   'click #confirmDelete': function() {
   		Projects.update({_id:Session.get("currentProject")},{$pull:{projectAdministrators: Meteor.userId()}});
   },
-
   'click .btn-add-to-project': function() {
   		if (this)
   		{
