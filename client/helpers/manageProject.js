@@ -214,6 +214,23 @@ Template.manageProject.helpers ({
       if (headerNode.header)
         return headerNode.header.title;
  	},
+ 	listOfAdmins: function() {
+ 		if (Session.get("currentProject")){
+ 			var currProj=Projects.findOne({_id:Session.get("currentProject")});
+ 			if (currProj)
+ 			{
+ 			var admins=currProj.projectAdministrators;
+ 			var adminNames=Meteor.users.find({_id: {$in: admins}});
+ 			if (adminNames)
+ 				return adminNames;
+ 			}
+	}
+ 	},
+ 	getAddress: function() {
+ 		if ((this) && (this.emails) && (this.emails[0]))
+ 			return this.emails[0].address;
+ 		else return null;
+ 	},
 	listOfDocuments: function() {
 		var retval=[];
 		var currProject=Session.get("currentProject");

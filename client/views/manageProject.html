@@ -134,10 +134,10 @@
 		
     			{{else}}
        				<div class="alert alert-danger">
-						You cannot edit this page.  Contact one of these project administrators for any needed changes:  
+						You need administrator permission to change the project settings.  Contact one of these project administrators for any needed changes:  
 						<ul class="list-inline">
 						{{#each listOfAdmins}}
-						<li>{{email}}</li>
+						<li>{{getAddress}}</li>
 						{{/each}}
 						</ul>
 					</div>
