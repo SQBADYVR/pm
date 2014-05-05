@@ -135,6 +135,12 @@ Template.dfmea.helpers ({
 		if (headerNode)
 			return headerNode.content;
 	},
+  titleItem: function() {
+    headerNode=DFMEAs.findOne({_id: Session.get("currentDFMEA")});
+    if (headerNode)
+      if (headerNode.header)
+        return headerNode.header.title;
+  },
 	Major: function(){
 		headerNode=DFMEAs.findOne({_id: Session.get("currentDFMEA")});
 		if (headerNode)
@@ -380,6 +386,22 @@ Template.dfmea.events(okCancelEvents(
       Session.set('editField',null);
     }})
 );
+Template.dfmea.events(okCancelEvents(
+  '#title-input',
+  {
+    ok: function (text, evt) {
+      DFMEAs.update({_id: Session.get("currentDFMEA")},{
+        $set: {"header.title": text,
+        timestamp: (new Date()).getTime(),
+      }});
+      Session.set("editing_itemname", null);
+      Session.set('editField',null);
+    },
+  cancel: function () {
+      Session.set('editing_itemname', null);
+      Session.set('editField',null);
+    }})
+);
 Template.dfmea.events ({
   'click .destroy': function () {
     return null;
@@ -389,6 +411,12 @@ Template.dfmea.events ({
     Session.set('editField',"Scope");
     Deps.flush(); // update DOM before focus
     activateInput(tmpl.find("#scope-input"));
+  },
+  'click .titleEdit': function (evt, tmpl) {
+    Session.set('editing_itemname', this._id);
+    Session.set('editField',"Title");
+    Deps.flush(); // update DOM before focus
+    activateInput(tmpl.find("#title-input"));
   },
   'click .nodeContent': function (evt, tmpl) {
     Session.set('editing_itemname', this._id);

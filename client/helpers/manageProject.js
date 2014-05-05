@@ -168,11 +168,16 @@ Template.manageProject.helpers ({
 	anyProjects: function() {
 		if (Projects.find({projectMembers: Meteor.userId()})) 
 			if (Projects.find({projectMembers: Meteor.userId()}).count()>0)
+			{
 				return true;
+			}
 		return false;
 	},
 	projectsICanSee: function() {
 		return Projects.find({projectMembers: Meteor.userId()});
+	},
+	projectSelected: function() {
+		return (Session.get("currentProject"));
 	},
 	editing: function() {
 		return Session.equals('editingProject', this._id);
@@ -202,6 +207,13 @@ Template.manageProject.helpers ({
 		}
 		return false;
 	},
+	titleItem: function() {
+		
+    headerNode=DFMEAs.findOne({_id: Session.get("currentDFMEA")});
+    if (headerNode)
+      if (headerNode.header)
+        return headerNode.header.title;
+ 	},
 	listOfDocuments: function() {
 		var retval=[];
 		var currProject=Session.get("currentProject");
@@ -477,9 +489,21 @@ Template.manageProject.helpers ({
 		return Projects.findOne(currProject);
 	},
 	projectDescription: function() {
-		if (this)
-			if (this.projectDescription)
-				return this.projectDescription;
+		if (Session.get("currentProject"))
+		{
+		var currProject=Projects.findOne({_id: Session.get("currentProject")});
+		if ((currProject) && (currProject.projectDescription))
+			return currProject.projectDescription;
+		}
+		return "Enter project description"
+	},
+	getProjectName: function() {
+		if (Session.get("currentProject"))
+		{
+		var currProject=Projects.findOne({_id: Session.get("currentProject")});
+		if ((currProject) && (currProject.projectName))
+			return currProject.projectName;
+		}
 		return "Enter project description"
 	},
 	revNumber: function() {
@@ -582,7 +606,7 @@ Template.manageProject.events(okCancelEvents(
      }));
 
 Template.manageProject.events(okCancelEvents(
-  '#editProjectName',
+  '#editProjectName', 
   {
     ok: function (text, evt) {	
       if ((text) && Accounts.loginServicesConfigured())
@@ -595,7 +619,20 @@ Template.manageProject.events(okCancelEvents(
     cancel: function () {
   	 Session.set('editingProject',null);}
      }));
-
+Template.manageProject.events(okCancelEvents(
+  '#editingProjectName', 
+  {
+    ok: function (text, evt) {	
+      if ((text) && Accounts.loginServicesConfigured())
+      {
+      	Projects.update({_id: Session.get('currentProject')},{$set: {projectName: text}});
+      }
+      evt.target.value='';
+      Session.set('editingProject',null);
+  },
+    cancel: function () {
+  	 Session.set('editingProject',null);}
+     }));
 Template.manageProject.events(okCancelEvents(
   '#projectDescription',
   {

@@ -1,5 +1,20 @@
 var adminId;
 Projects = new Meteor.Collection('projects');
+DFMEAs=new Meteor.Collection('dfmeas');
+Meteor.publish('dfmeas' ,function() {
+    return DFMEAs.find();  // narrow this down later
+  });
+
+DFMEAs.allow({
+  update: function(userId, doc, fields, modifier){
+    return true;
+  },
+  insert: function(userId, doc) {
+    return true;
+  }
+
+})
+
 
 Meteor.publish('myProjects' ,function() {
     var myID=this.userId;

@@ -4,6 +4,30 @@
 <table class="table table-condensed table-bordered">
 <thead>
 	<tr>
+	<th colspan="7" class="titleEdit">	
+   		<div class="edit titleEdit">
+   		{{#if editing "Title"}}
+   			<div class="input-group scopeEdit form-control">
+      		Title: <textarea id="title-input" type="text" class="titleEdit form-control" value="{{titleItem}}" placeholder="{{titleItem}}"></textarea>
+   			</div>
+		{{else}}
+			Title: {{titleItem}}
+		{{/if}}
+		</div>
+	</th>
+	<th colspan="4" rowspan="2">
+	<div class="DFMEA-revision">Revision: {{Major}}.{{Minor}}</div>
+	{{#if canEdit}}
+		  <div class="btn-group FMEA-revision">
+            <button type="button" class="btn btn-default btn-xs btn-rev-major"><span title="Archive a snapshot of this DFMEA and roll the major revision number.">Rev Major</span></button>
+            <button type="button" class="btn btn-default btn-xs btn-rev-minor"><span title="Archive a snapshot of this DFMEA and roll the minor revision number.">Rev Minor</span></button>
+          </div>
+    {{/if}}
+    <div>Created: {{createDate}}</div>
+	<div>Revised: {{revisedDate}}</div>
+    </th>
+    </tr>
+    <tr>
 	<th colspan="7" class="scopeEdit">	
    		<div class="edit scopeEdit">
    		{{#if editing "Scope"}}
@@ -14,17 +38,6 @@
 			DFMEA Scope: {{scopeItem}}
 		{{/if}}
 		</div>
-	</th>
-	<th colspan="4">
-	{{#if canEdit}}
-	<div class="DFMEA-revision">Revision: {{Major}}.{{Minor}}</div>
-		  <div class="btn-group FMEA-revision">
-            <button type="button" class="btn btn-default btn-xs btn-rev-major"><span title="Archive a snapshot of this DFMEA and roll the major revision number.">Rev Major</span></button>
-            <button type="button" class="btn btn-default btn-xs btn-rev-minor"><span title="Archive a snapshot of this DFMEA and roll the minor revision number.">Rev Minor</span></button>
-          </div>
-    {{/if}}
-	<div>Created: {{createDate}}</div>
-	<div>Revised: {{revisedDate}}</div>
 	</th>
 	</tr>
 	<tr>
@@ -91,7 +104,7 @@
 		<td rowspan="{{rowSpan}}" class="SEV">
 		{{#if editing "SEV"}}
 		<div class="input-group edit SEVedit">
-		   	<input id="SEV-input" type="text" class="SEVEdit form-control" value="{{SEV}}" />
+		   	<input id="SEV-input" type="text" class="SEVEdit form-control" size="2" value="{{SEV}}" />
       	</div>
  		{{else}}
 		{{SEV}}
@@ -100,7 +113,7 @@
 		<td rowspan="{{rowSpan}}" class="Classification">
 		{{#if editing "Class"}}
      		<div class="edit classEdit input-group">
-        	<input id="class-input" type="text" class="classEdit form-control" value="{{classification}}" />
+        	<input id="class-input" type="text" size="3" class="classEdit form-control" value="{{classification}}" />
       		</div>
 		{{else}}
 		{{classification}}
@@ -111,8 +124,8 @@
 		<td class="OCC">
 		{{#if editing "OCC"}}
      		<div class="edit OCCEdit input-group">
-        	<textarea id="OCC-input" type="text" class="OCCEdit form-control" value="{{OCC}}" placeholder="{{OCC}}"></textarea>
-      		</div>
+        	<input id="OCC-input" type="text" class="OCCEdit form-control" value="{{OCC}}" size="2"/>
+        	</div>
 		{{else}}
 		{{OCC}}
 		{{/if}}
@@ -129,7 +142,7 @@
 		<td class="DET">
 		{{#if editing "DET"}}
      		<div class="edit DETEdit input-group">
-        	<input id="DET-input" type="text" class="DETEdit form-control" value="{{DET}}" />
+        	<input id="DET-input" type="text" class="DETEdit form-control" size="2" value="{{DET}}" />
       		</div>
 		{{else}}
 		{{DET}}
@@ -140,7 +153,7 @@
 		</td>
 		<td class="ActionItems">
 			<div class="btn-group">
-	  			<button type="button" class="btn btn-default btn-xs btn-RAIL-add" ><span title="Add new action item"   class="glyphicon glyphicon-plus"></span></button>
+	  			<button type="button" class="btn btn-default btn-xs btn-RAIL-add disabled" ><span title="Add new action item"   class="glyphicon glyphicon-plus"></span></button>
 	  			{{#if RAILitems}}
   				<button type="button" class="btn btn-default btn-xs btn-RAIL-review" ><span title="Copy this {{nodeText}} and all dependent items" class="glyphicon glyphicon-list"></span></button>
   				{{/if}}

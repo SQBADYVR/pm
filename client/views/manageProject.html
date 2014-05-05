@@ -79,6 +79,7 @@
 </ul>
 </div>
 </div>
+{{#if projectSelected}}
 <div id="main-panel" class="col-sm-9">
 <ul class="nav nav-tabs">
   <li class="active"><a href="#Content" data-toggle="tab">Content</a></li>
@@ -95,7 +96,7 @@
           Documents
         </a>
       <div class="btn-group pull-right">
-      <button type="button" class="btn btn-default dropdown-toggle createTLDS" data-toggle="dropdown">New Requirements<span title="Create New Requirements" class="caret"></span></button>
+      <button type="button" class="btn btn-default dropdown-toggle createTLDS disabled" data-toggle="dropdown" title="Create New Requirements Matrix">New Requirements<span title="Create New Requirements" class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
     		<li><a href="#">Create Blank (inactive)</a></li>
     		<li><a href="#">Copy From...(inactive)</a></li>
@@ -112,16 +113,81 @@
    </div>
    </div>
 	<div class="panel-body">
+		<ul class="list-inline">
     	{{#each listOfDocuments}}
+    	<li>
        	<div>
-      	 <a class="btn btn-link btn-lg" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block">{{docName}}</span></a>
+      	 <a class="btn btn-default" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block DFMEAName">{{docName}}</span></a>
       	 </div>
+      	 </li>
       	 {{/each}}
+      	 </ul>
    	</div>
    	</div>
   <div class="tab-pane" id="settings">
-  		Project Administrators:  
-
+    {{#if adminsProject}}
+		
+    {{else}}
+       	<div class="alert alert-danger">
+		You cannot edit this page.  Contact one of these project administrators for any needed changes:  
+		<ul class="list-inline">
+		{{#each listOfAdmins}}
+		<li>{{email}}</li>
+		{{/each}}
+		</ul>
+	</div>
+	
+    {{/if}}
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="edit">
+    	    <h4>Project Name</h4>
+            <form class="form-inline" role="form">
+            <div class="form-group">
+              <label class="sr-only" for="newProject">Name (or rename) the project</label>
+              {{#if editingProjectName}}
+              <input type="text" class="form-control project-name-input" id="project-name-input" value="{{getProjectName}}" placeholder="{{getProjectName}}" size="30">
+              <span class="help-block"></span>
+              {{else}}
+              <div class="project-name">
+              {{getProjectName}}
+              </div>
+              {{/if}}
+             </div>
+            </form>
+        </div>
+        <div class="projectType" id="projectType">
+    	    <h4>Privacy Setting</h4>
+    	    <div class="radio">
+  			    <label class="{{isPublic}}">
+  			  	<input type="radio" name="optionsRadios" id="public" value="public" {{isPublic}} >
+  			  	<span class="glyphicon glyphicon-globe"></span> Public Project:  Anyone on cloudDesign can view, download, and print.  You decide who can administer and edit.
+ 			      </label>
+		      </div>
+		      <div class="radio">
+ 			      <label class="{{isNotPublic}}">
+    		  	<input type="radio" name="optionsRadios" id="private" value="private" {{isNotPublic}}>
+    			  <span class="glyphicon glyphicon-lock"></span> Private Project:  You decide who can administer, edit, download, print, or view project data.  All users except view-only must be paid subscribers.
+  			    </label>
+		      </div>
+	      </div>
+      </div>
+      <div class="col-sm-5">
+        <form role="form">
+          <div class="form-group">
+            <label for="projectDescription"><h4>Project Description</h4></label>
+            <input type="textarea" rows="6" class="form-control projectDescription" id="projectDescription" placeholder="{{projectDescription}}">
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-3">
+        <h4>Revision: {{revNumber}}</h4>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs btn-rev-major inactive">Rev Major</button>
+            <button type="button" class="btn btn-default btn-xs btn-rev-minor inactive">Rev Minor</button>
+          </div>
+      </div>
+  </div>
   </div>
   <div class="tab-pane" id="permissions">
   <div class="row">
@@ -197,6 +263,15 @@
     </div>
   </div>
   </div>
-</div></div>
+</div>
+{{else}}
+<div id="main-panel" class="col-sm-9">
+<div class="alert alert-success">
+
+Please create or choose a project to proceed.
+</div>
+</div>
+{{/if}}
+</div>
 </div>
 </template>
