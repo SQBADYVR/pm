@@ -78,11 +78,8 @@
 	</li>
 </ul>
 </div>
-
 </div>
-
 <div id="main-panel" class="col-sm-9">
-
 <ul class="nav nav-tabs">
   <li class="active"><a href="#Content" data-toggle="tab">Content</a></li>
   <li><a href="#settings" data-toggle="tab">Settings</a></li>
@@ -92,17 +89,36 @@
 </ul>
 <div class="tab-content row">
   <div class="tab-pane active" id="Content">
-  		<div class="panel-body-header">
-  		<h4>Project Documents:</h4>
-  		</div>
-		<div class="panel-body">
-       		{{#each listOfDocuments}}
-       		<div>
-      		 <a class="btn btn-link btn-lg" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block">{{docName}}</span></a>
-      		 </div>
-      		 {{/each}}
-      	</div>
-  </div>
+    <div class="panel-heading">
+      <div class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          Documents
+        </a>
+      <div class="btn-group pull-right">
+      <button type="button" class="btn btn-default dropdown-toggle createTLDS" data-toggle="dropdown">New Requirements<span title="Create New Requirements" class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+    		<li><a href="#">Create Blank (inactive)</a></li>
+    		<li><a href="#">Copy From...(inactive)</a></li>
+    		<li><a href="#">Import (inactive)</a></li>
+  		</ul>
+  	    <button type="button" class="btn btn-default dropdown-toggle createDFMEA" data-toggle="dropdown">New DFMEA<span title="Create New DFMEA" class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+    		<li class="createNewDFMEA"><a href="#">Create Blank</a></li>
+    		<li><a href="#">Create Blank and Edit (inactive)</a></li>
+    		<li><a href="#">Copy From...(inactive)</a></li>
+    		<li><a href="#">Import (inactive)</a></li>
+  		</ul>
+  	  </div>
+   </div>
+   </div>
+	<div class="panel-body">
+    	{{#each listOfDocuments}}
+       	<div>
+      	 <a class="btn btn-link btn-lg" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block">{{docName}}</span></a>
+      	 </div>
+      	 {{/each}}
+   	</div>
+   	</div>
   <div class="tab-pane" id="settings">
   		Project Administrators:  
 
@@ -180,7 +196,7 @@
     </div>
     </div>
   </div>
+  </div>
 </div></div>
-</div>
 </div>
 </template>

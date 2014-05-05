@@ -1,0 +1,102 @@
+<template name="feedback">
+<div class="row">
+	<div class="alert alert-info">
+		Please enter your feedback in the appropriate column.  Thanks!
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4">
+		<div class="panel panel-danger">
+  			<div class="panel-heading">Bug Reports</div>
+			<div class="panel-body">
+				<ul class="list-group">
+				<li class="list-group-item">
+  			    <form class="form" role="form">
+  					<div class="form-group">
+   					 	<label class="sr-only" for="bugDescription">Short Description</label>
+    				 	<input type="text" class="form-control" id="bugDescription" placeholder="Enter short description">
+  					</div>
+  					<div class="form-group">
+    					<label class="sr-only" for="detailedDescription">Detailed Description</label>
+    				<textarea type="text" row="4" class="form-control" id="detailedDescription" placeholder="Detailed description of the issue, including the screen you were on and what you were trying to do."></textarea>
+  					</div>
+					<button type="submit" id="bugSubmit" class="btn btn-default">Submit New Bug</button>
+				</form>
+				</li>
+  				{{#each existingBugs}}
+  				<li class="list-group-item">
+  				<p>Issue: {{shortDescription}}</p>
+  				<p>Detail:  {{detailedDescription}}</p>
+  				<p>Reported by: {{bugUserName}}</p>
+  				<p>Reported on: {{bugDate}}</p>
+  				Status:  {{status}}
+ 				</li>
+  				{{/each}}
+  				</ul>
+    		</div>
+  		</div>
+  	</div>
+  	<div class="col-sm-4">
+  		<div class="panel panel-primary">
+  			<div class="panel-heading">Feature Requests</div>
+			<div class="panel-body">
+				<ul class="list-group">
+				<li class="list-group-item">
+  			    <form class="form" role="form">
+  					<div class="form-group">
+   					 	<label class="sr-only" for="featureDescription">Short Description</label>
+    				 	<input type="text" class="form-control" id="featureDescription" placeholder="Enter short description">
+  					</div>
+  					<div class="form-group">
+    					<label class="sr-only" for="featureDetailedDescription">Detailed Description</label>
+    				<textarea type="text" row="4" class="form-control" id="featureDetailedDescription" placeholder="Detailed description of the issue, including the screen you were on and what you were trying to do."></textarea>
+  					</div>
+					<button type="submit" id="featureSubmit" class="btn btn-default">Submit New Feature Request</button>
+				</form>
+				</li>
+  				{{#each featureRequests}}
+  				<li class="list-group-item">
+  				<p>Issue: {{shortDescription}}</p>
+  				<p>Detail:  {{detailedDescription}}</p>
+  				<p>Reported by: {{bugUserName}}</p>
+  				<p>Reported on: {{bugDate}}</p>
+  				Status:  {{status}}
+  				</li>
+  				{{/each}}
+  				</ul>
+    		</div>
+  		</div>
+  	</div>
+  	  	<div class="col-sm-4">
+  		<div class="panel panel-primary">
+  			<div class="panel-heading">General Comments</div>
+			<div class="panel-body">
+				<ul class="list-group">
+				<li class="list-group-item">
+  			    <form class="form" role="form">
+  					<div class="form-group">
+   					 	<label class="sr-only" for="featureDescription">Short Description</label>
+    				 	<input type="text" class="form-control" id="featureDescription" placeholder="Enter short description">
+  					</div>
+  					<div class="form-group">
+    					<label class="sr-only" for="geeDetailedDescription">Detailed Description</label>
+    				<textarea type="password" row="4" class="form-control" id="featureDetailedDescription" placeholder="Detailed description of the issue, including the screen you were on and what you were trying to do."></textarea>
+  					</div>
+					<button type="text" id="generalSubmit" class="btn btn-default">Submit New Comment</button>
+				</form>
+				</li>
+  				{{#each generalRequests}}
+  				<li class="list-group-item">
+  				<p>Issue: {{shortDescription}}</p>
+  				<p>Detail:  {{detailedDescription}}</p>
+  				<p>Reported by: {{bugUserName}}</p>
+  				<p>Reported on: {{bugDate}}</p>
+  				Status:  {{status}}
+  				</li>
+  				{{/each}}
+  				</ul> 			
+  			</div>
+  		</div>
+  	</div>
+</div>
+</template>

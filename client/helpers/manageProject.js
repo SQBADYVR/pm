@@ -1,4 +1,5 @@
 Projects=new Meteor.Collection('projects');
+
 /*************************************************
       SlidePanel JS v2.0
       @author Fabio Mangolini
@@ -33,6 +34,8 @@ Projects=new Meteor.Collection('projects');
 
 var projectSubscription=Meteor.subscribe('myProjects');
 var myTeam=Meteor.subscribe('colleagues');
+
+var dfmeaSubscription=Meteor.subscribe('dfmeas');
 		
 // ID of currently selected list
 Session.setDefault('currentProject', null);
@@ -625,6 +628,87 @@ Template.manageProject.events ({
 	}
 	else return null;
   },
+  'click .createNewDFMEA': function() {
+	if (Session.get("currentProject"))
+	{
+		var timestamp = (new Date()).getTime();
+		var FMEA_root= {
+			header : {
+			number : "1",
+			team : [Meteor.userId()],
+			title : "New DFMEA",
+			creation_date : timestamp,
+			revision_date : timestamp,
+			},
+		content: "Blank DFMEA form",
+		nodeKind : "FMEAroot",
+		parentcategory : null,
+		parentProject: [Session.get("currentProject")],
+		subcategories : [],
+		undoStack: [],
+		archivedStack:[],
+		revision: {major: 0, minor: 1}
+		}
+
+		var FMEA_id = DFMEAs.insert(FMEA_root);
+		Projects.update({_id: Session.get("currentProject")},{$push: {DFMEAlinks: FMEA_id}});
+
+		var  fctn_id = DFMEAs.insert({
+			nodeKind: "designFunction",
+			nodeText: "Design Function",
+			parentCategory: FMEA_id,
+			subcategories: [],
+			content: "New Design Function",
+			parentProject: [Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		DFMEAs.update({_id: FMEA_id}, {$push: {subcategories: fctn_id}});
+		var fmode_id = DFMEAs.insert({
+			nodeKind: "failureMode",
+			nodeText: "Failure Mode",
+			parentCategory: fctn_id,
+			subcategories: [],
+			content: "New Failure Mode",
+			parentProject:[Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		DFMEAs.update({_id: fctn_id}, {$push: {subcategories: fmode_id}});
+		var effects_id = DFMEAs.insert({
+			nodeKind: "failureEffects",
+			nodeText: "Effect of Failure",
+			parentCategory: fmode_id,
+			subcategories: [],
+			content: "New Failure Effects",
+			SEV: 10,
+			classification: " ",
+			parentProject:[Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		DFMEAs.update({_id: fmode_id}, {$push: {subcategories: effects_id}});
+		var cause_id = DFMEAs.insert({
+			nodeKind: "failureCauses",
+			nodeText: "Potential Cause",
+			parentCategory: effects_id,
+			subcategories: [],
+			content: "Potential Cause of Failure",
+			OCC: 10,
+			designControl: "Design Controls to Detect Failure",
+			DET: 10,
+			parentProject:[Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		DFMEAs.update({	_id: effects_id}, {$push: {subcategories: cause_id}});
+		return FMEA_id;
+	}
+  },
   'click .Admin': function() {
   	return toggleAdmin(this);
   },
@@ -640,7 +724,6 @@ Template.manageProject.events ({
   'click .Print': function() {
   	return togglePrint(this);
   },
-
  'click .Viewer': function() {
   	return toggleView(this);
   },
