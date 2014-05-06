@@ -239,7 +239,6 @@ Template.manageProject.helpers ({
 			i;
 		if(currProject) {
 			var currProjectObject=Projects.findOne({_id: currProject});
-			tempKey=[];
 			for (i=0; i<currProjectObject.DFMEAlinks.length;i++)
 				tempKey.push("Design FMEA");
 			retval=_.zip(tempKey,(currProjectObject.DFMEAlinks));
@@ -249,26 +248,31 @@ Template.manageProject.helpers ({
 			tempKey2=_.zip(tempKey,currProjectObject.PFMEAlinks)
 			retval=retval.concat(tempKey2);
 			tempKey=[];
+			tempKey2=[];
 			for (i=0; i<currProjectObject.DVPRlinks.length;i++)
 				tempKey.push("DVP&R");
 			tempKey2=_.zip(tempKey2,(currProjectObject.DVPRlinks));
 			retval=retval.concat(tempKey2);
 			tempKey=[];
+			tempKey2=[];
 			for (i=0; i<currProjectObject.RequirementsLink.length;i++)
 				tempKey.push("Requirements");
 			tempKey2=_.zip(tempKey,currProjectObject.RequirementsLink);
 			retval=retval.concat(tempKey2);
 			tempKey=[];
+			tempKey2=[];
 			for (i=0; i<currProjectObject.ControlPlanLinks.length;i++)
 				tempKey.push("Control Plans");
 			tempKey2=_.zip(tempKey2,(currProjectObject.ControlPlanLinks));
 			retval=retval.concat(tempKey2);
 			tempKey=[];
+			tempKey2=[];
 			for (i=0; i<currProjectObject.PVPRlinks.length;i++)
 				tempKey.push("PVR&P");
 			tempKey2=_.zip(tempKey,currProjectObject.PVPRlinks);
 			retval=retval.concat(tempKey2);
 			tempKey=[];
+			tempKey2=[];
 			for (i=0; i<currProjectObject.MiscDocs.length;i++)
 				tempKey.push("Document");
 			tempKey2=_.zip(tempKey,currProjectObject.MiscDocs);
@@ -282,6 +286,11 @@ Template.manageProject.helpers ({
 			switch (this[0]) {
 				case "Design FMEA": {
 					retval="/DFMEA/"+this[1];
+					return retval;
+					break;
+				};
+				case "Process FMEA": {
+					retval="/PFMEA/"+this[1];
 					return retval;
 					break;
 				}
@@ -301,27 +310,38 @@ Template.manageProject.helpers ({
 				case "Design FMEA": {
 					if (this[1])
 						retval=DFMEAs.findOne({_id: this[1]},{header: 1});
-						if (retval.header)
+						if ((retval) && (retval.header))
 							return retval.header.title;
 					break;
-				}
+				};
+				case "Process FMEA": {
+					if (this[1])
+						retval=PFMEAs.findOne({_id: this[1]},{header: 1});
+						if ((retval) && (retval.header))
+							return retval.header.title;
+					break;
+				};
 				default:  return null;
 			}
 		}
 	},
 	isPublic: function() {
-		if (this.publicProject)
+		if (Session.get("currentProject"))
 		{
+			var currProject=Projects.findOne({_id: Session.get("currentProject")})
+			if ((currProject) && (currProject.publicProject))
 			return "checked";
 		}
-		else
-			return "";
+		return "";
 	},
 	isNotPublic: function() {
-		if (this.publicProject)
-			return "";
-		else
+		if (Session.get("currentProject"))
+		{
+			var currProject=Projects.findOne({_id: Session.get("currentProject")})
+			if ((currProject) && (!(currProject.publicProject)))
 			return "checked";
+		}
+		return "";
 	},
 	isNotPublic2: function() {
 		return (!(this.publicProject));
@@ -682,7 +702,8 @@ Template.manageProject.events ({
 	}
 	else return null;
   },
-  'click .createNewDFMEA': function() {
+  'click .createDFMEA': function(evt) {
+  	evt.stopPropagation();
 	if (Session.get("currentProject"))
 	{
 		var timestamp = (new Date()).getTime();
@@ -762,6 +783,91 @@ Template.manageProject.events ({
 		DFMEAs.update({	_id: effects_id}, {$push: {subcategories: cause_id}});
 		return FMEA_id;
 	}
+	else return null;
+  },
+  'click .createPFMEA': function(evt) {
+  	evt.stopPropagation();
+	if (Session.get("currentProject"))
+	{
+		var timestamp = (new Date()).getTime();
+		var FMEA_root= {
+			header : {
+			number : "1",
+			team : [Meteor.userId()],
+			title : "New PFMEA",
+			creation_date : timestamp,
+			revision_date : timestamp,
+			},
+		content: "Blank PFMEA form",
+		nodeKind : "PMEAroot",
+		parentcategory : null,
+		parentProject: [Session.get("currentProject")],
+		subcategories : [],
+		undoStack: [],
+		archivedStack:[],
+		revision: {major: 0, minor: 1}
+		}
+
+		var FMEA_id = PFMEAs.insert(FMEA_root);
+		Projects.update({_id: Session.get("currentProject")},{$push: {PFMEAlinks: FMEA_id}});
+
+		var  fctn_id = PFMEAs.insert({
+			nodeKind: "processFunction",
+			nodeText: "Process Function",
+			parentCategory: FMEA_id,
+			subcategories: [],
+			content: "New Process Function",
+			parentProject: [Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		PFMEAs.update({_id: FMEA_id}, {$push: {subcategories: fctn_id}});
+		var fmode_id = PFMEAs.insert({
+			nodeKind: "failureMode",
+			nodeText: "Failure Mode",
+			parentCategory: fctn_id,
+			subcategories: [],
+			content: "New Failure Mode",
+			parentProject:[Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		PFMEAs.update({_id: fctn_id}, {$push: {subcategories: fmode_id}});
+		var effects_id = PFMEAs.insert({
+			nodeKind: "failureEffects",
+			nodeText: "Effect of Failure",
+			parentCategory: fmode_id,
+			subcategories: [],
+			content: "New Failure Effects",
+			SEV: 10,
+			classification: " ",
+			parentProject:[Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		PFMEAs.update({_id: fmode_id}, {$push: {subcategories: effects_id}});
+		var cause_id = PFMEAs.insert({
+			nodeKind: "failureCauses",
+			nodeText: "Potential Cause",
+			parentCategory: effects_id,
+			subcategories: [],
+			content: "Potential Cause of Failure",
+			OCC: 10,
+			processControlPrevention: "Process Controls to Prevent Failure",
+			processControlDetection: "Process Controls to Detect Failure",
+			DET: 10,
+			parentProject:[Session.get("currentProject")],
+			rootID: FMEA_id,
+			rowSpan:1,
+			sortOrder: Math.random()*100000000
+			});
+		PFMEAs.update({	_id: effects_id}, {$push: {subcategories: cause_id}});
+		return FMEA_id;
+	}
+	else return null;
   },
   'click .Admin': function() {
   	return toggleAdmin(this);

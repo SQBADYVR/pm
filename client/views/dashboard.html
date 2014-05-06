@@ -1,28 +1,6 @@
 <template name="dashboard">
-{{enterDashboard}}
-<div class="row">
+<div class="alert alert-success">
 
-<div id="slidein-panel" class="left-side-panel-open">
-<div id="slidein-panel-list">
-<ul class="list-group">
-  <li class="list-group-item">My Projects:</li>
-	{{#each projectICanSee}}
-  	<li class="list-group-item">{{projectName}}</li>
-	{{/each}}
-	<li class="list-group-item"><div id="createProject">
-      <input type="text" id="new-project" placeholder="Create New Project" />
-	</div>
-	</li>
-</ul>
-</div>
-<div id="slidein-panel-btn" class="btn-group">
-<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-list"></span>
-</button>
-</div>
-</div>
-
-<div id="main-panel">
-Dashboard placeholder
-</div>
+Welcome to the dashboard.  We have not determined what should be here yet, but please use the navigation bar at the top of the screen to create/manage a project and/or documents.  You can also invite people to be your colleagues on the "My Account" link above.
 </div>
 </template>

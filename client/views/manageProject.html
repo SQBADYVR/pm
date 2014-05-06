@@ -98,24 +98,45 @@
  				<div class="tab-pane active" id="Content">
     				<div class="panel-heading">
       					<div class="panel-title">
-        					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+        					<a >
           						Documents
         					</a>
-      						<div class="btn-group pull-right">
-      							<button type="button" class="btn btn-default dropdown-toggle createTLDS disabled" data-toggle="dropdown" title="Create New Requirements Matrix">New Requirements<span title="Create New Requirements" class="caret"></span></button>
-        						<ul class="dropdown-menu" role="menu">
-    								<li><a href="#">Create Blank (inactive)</a></li>
-    								<li><a href="#">Copy From...(inactive)</a></li>
-    								<li><a href="#">Import (inactive)</a></li>
-  								</ul>
-  	    						<button type="button" class="btn btn-default dropdown-toggle createDFMEA" data-toggle="dropdown">New DFMEA<span title="Create New DFMEA" class="caret"></span></button>
-        							<ul class="dropdown-menu" role="menu">
-    									<li class="createNewDFMEA"><a href="#">Create Blank</a></li>
-    									<li><a href="#">Copy From...(inactive)</a></li>
-							    		<li><a href="#">Import (inactive)</a></li>
-							  		</ul>
- 						 	</div>
-   						</div>
+                  <ul class="nav nav-pills">
+                  <li class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" title="New Requirements Document" type="button" id="reqMenu1" data-toggle="dropdown">
+                    Create Requirements
+                    <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="reqMenu1">
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Create Blank (inactive)</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Copy From...(inactive)</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Import (inactive)</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" title="Create New DFMEA" type="button" id="DFMEAMenu1" data-toggle="dropdown">
+                    Create DFMEA
+                    <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="DFMEAMenu1">
+                      <li role="presentation"><a class="createDFMEA" role="menuitem" tabindex="-1" href="#">Create Blank (inactive)</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Copy From...(inactive)</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Import (inactive)</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" title="Create New PFMEA" type="button" id="FMEAMenu1" data-toggle="dropdown">
+                    Create PFMEA
+                    <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="PFMEAMenu1">
+                      <li role="presentation"><a class="createPFMEA" role="menuitem" tabindex="-1" href="#">Create Blank (inactive)</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Copy From...(inactive)</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Import (inactive)</a></li>
+                    </ul>
+                  </li>
+                  </ul>
+                </div>
    					</div>
 					<div class="panel-body">
 						<ul class="list-inline">

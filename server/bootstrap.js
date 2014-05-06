@@ -4,8 +4,20 @@ DFMEAs=new Meteor.Collection('dfmeas');
 Meteor.publish('dfmeas' ,function() {
     return DFMEAs.find();  // narrow this down later
   });
-
+PFMEAs=new Meteor.Collection('pfmeas');
+Meteor.publish('pfmeas' ,function() {
+    return PFMEAs.find();  // narrow this down later
+  });
 DFMEAs.allow({
+  update: function(userId, doc, fields, modifier){
+    return true;
+  },
+  insert: function(userId, doc) {
+    return true;
+  }
+
+})
+PFMEAs.allow({
   update: function(userId, doc, fields, modifier){
     return true;
   },

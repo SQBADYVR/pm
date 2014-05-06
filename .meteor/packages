@@ -10,7 +10,6 @@ underscore
 bootstrap-3
 accounts-password
 accounts-ui-bootstrap-3
-fast-render
 email
 accounts-base
 jquery

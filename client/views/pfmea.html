@@ -1,0 +1,181 @@
+<template name="pfmea">
+{{updateRecentDocuments}}
+<div class="table-responsive">
+<table class="table table-condensed table-bordered">
+<thead>
+	<tr>
+	<th colspan="8" class="titleEdit">	
+   		<div class="edit titleEdit">
+   		{{#if editing "Title"}}
+   			<div class="input-group scopeEdit form-control">
+      		Title: <textarea id="title-input" type="text" class="titleEdit form-control" value="{{titleItem}}" placeholder="{{titleItem}}"></textarea>
+   			</div>
+		{{else}}
+			Title: {{titleItem}}
+		{{/if}}
+		</div>
+	</th>
+	<th colspan="4" rowspan="2">
+	<div class="DFMEA-revision">Revision: {{Major}}.{{Minor}}</div>
+	{{#if canEdit}}
+		  <div class="btn-group FMEA-revision">
+            <button type="button" class="btn btn-default btn-xs btn-rev-major"><span title="Archive a snapshot of this PFMEA and roll the major revision number.">Rev Major</span></button>
+            <button type="button" class="btn btn-default btn-xs btn-rev-minor"><span title="Archive a snapshot of this PFMEA and roll the minor revision number.">Rev Minor</span></button>
+          </div>
+    {{/if}}
+    <div>Created: {{createDate}}</div>
+	<div>Revised: {{revisedDate}}</div>
+    </th>
+    </tr>
+    <tr>
+	<th colspan="8" class="scopeEdit">	
+   		<div class="edit scopeEdit">
+   		{{#if editing "Scope"}}
+   			<div class="input-group scopeEdit form-control">
+      		PFMEA Scope: <textarea id="scope-input" type="text" class="scopeEdit form-control" value="{{scopeItem}}" placeholder="{{scopeItem}}"></textarea>
+   			</div>
+		{{else}}
+			PFMEA Scope: {{scopeItem}}
+		{{/if}}
+		</div>
+	</th>
+	</tr>
+	<tr>
+	<th id="process">
+	Process Step/ Function/ Requirement(s)
+	</th>
+	<th id="failureModes">
+	Potential Failure Mode
+	</th>
+	<th id="procEffect">
+	Potential Effect(s) of Failure
+	</th>
+	<th id="SEV">
+	Sev
+	</th>
+	<th id="classification">
+	Class
+	</th>
+	<th id="processCause">
+	Potential Cause(s)/ Mechanism(s) of Failure
+	</th>
+	<th id="OCC">
+	Occ
+	</th>
+	<th id="processControlPrevent">
+	Current Process Controls (Prevention)
+	</th>
+	<th id="processControlDetect">
+	Current Process Controls (Detection)
+	</th>
+	<th id="DET">
+	Det
+	</th>
+	<th id="RPN">
+	RPN
+	</th>
+	<th>
+	Action Item(s)
+	</th>
+	</tr>
+</thead>
+<tbody>
+{{#each rowOfArray}}
+	<tr>
+	{{#each processRow}}
+		<td rowspan="{{rowSpan}}" class="nodeContent {{nodeKind}}">
+		{{#if editing "Content"}}
+      		<div class="edit nodeContentEdit">
+      		<div class="input-group">
+        	<textarea id="content-input" type="text" class="nodeContentEdit form-control" value="{{content}}" placeholder="{{content}}"></textarea>
+        	</div>
+      		</div>
+    	{{else}}
+			{{content}}
+		{{/if}}
+		{{#if canEdit}}
+		<div class="btn-group">
+  			<button type="button" class="btn btn-default btn-xs btn-{{nodeKind}}-add" ><span title="Add new {{nodeText}} below"   class="glyphicon glyphicon-plus"></span></button>
+  			<button type="button" class="btn btn-default btn-xs btn-{{nodeKind}}-copy disabled" ><span title="Copy this {{nodeText}} and all dependent items" class="glyphicon glyphicon-file"></span></button>
+  			{{#if deletable}}
+  			<button type="button" class="btn btn-default btn-xs  btn-{{nodeKind}}-delete" ><span ttitle="Delete this {{nodeText}} and all dependent items" class="glyphicon glyphicon-trash"></span></button>
+  			{{/if}}
+		</div>
+		{{/if}}
+		</td>
+		{{#if processEffect}}
+		<td rowspan="{{rowSpan}}" class="SEV">
+			{{#if editing "SEV"}}
+			<div class="input-group edit SEVedit">
+			   	<input id="SEV-input" type="text" class="SEVEdit form-control" size="2" value="{{SEV}}" />
+    	  	</div>
+ 			{{else}}
+			{{SEV}}
+			{{/if}}
+		</td>
+		<td rowspan="{{rowSpan}}" class="Classification">
+			{{#if editing "Class"}}
+    	 		<div class="edit classEdit input-group">
+   		     	<input id="class-input" type="text" size="3" class="classEdit form-control" value="{{classification}}" />
+    	  		</div>
+			{{else}}
+			{{classification}}
+			{{/if}}
+		</td>
+		{{/if}}
+		{{#if processCause "Cause"}}
+			<td class="OCC">
+			{{#if editing "OCC"}}
+     			<div class="edit OCCEdit input-group">
+        		<input id="OCC-input" type="text" class="OCCEdit form-control" value="{{OCC}}" size="2"/>
+       	 	</div>
+			{{else}}
+			{{OCC}}
+			{{/if}}
+			</td>
+			<td class="processControlPrevention">
+			{{#if editing "processControlPrevention"}}
+     			<div class="edit processControlPreventionEdit input-group">
+        		<textarea id="processControlPrevention-input" type="text" class="processControlEditPrevention form-control" value="{{processControlPrevention}}" placeholder="{{processControlPrevention}}"></textarea>
+      			</div>
+			{{else}}
+				{{processControlPrevention}}
+			{{/if}}
+			</td>
+			<td class="processControlPrevention">
+			{{#if editing "processControlDetection"}}
+     			<div class="edit processControlDetectionEdit input-group">
+        		<textarea id="processControlDetection-input" type="text" class="processControlDetectionEdit form-control" value="{{processControlDetection}}" placeholder="{{processControlDetection}}"></textarea>
+      			</div>
+			{{else}}
+			{{processControlDetection}}
+			{{/if}}
+			</td>
+			<td class="DET">
+			{{#if editing "DET"}}
+     			<div class="edit DETEdit input-group">
+        		<input id="DET-input" type="text" class="DETEdit form-control" size="2" value="{{DET}}" />
+      			</div>
+			{{else}}
+			{{DET}}
+			{{/if}}
+			</td>
+			<td class="RPN">
+			{{RPN}}
+			</td>
+			<td class="ActionItems">
+				<div class="btn-group">
+	  				<button type="button" class="btn btn-default btn-xs btn-RAIL-add disabled" ><span title="Add new action item"   class="glyphicon glyphicon-plus"></span></button>
+	  				{{#if RAILitems}}
+  					<button type="button" class="btn btn-default btn-xs btn-RAIL-review" ><span title="Copy this {{nodeText}} and all dependent items" class="glyphicon glyphicon-list"></span></button>
+  					{{/if}}
+				</div>
+			</td>
+		{{/if}}
+	{{/each}}
+	</tr>
+{{/each}}
+</tbody>
+</table>
+</div>
+</template>
