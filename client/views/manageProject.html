@@ -98,9 +98,7 @@
  				<div class="tab-pane active" id="Content">
     				<div class="panel-heading">
       					<div class="panel-title">
-        					<a >
-          						Documents
-        					</a>
+        					<h2>Documents</h2><h6> (Click on any document to view)</h6>
                   <ul class="nav nav-pills">
                   <li class="dropdown">
                     <button class="btn btn-default dropdown-toggle" title="New Requirements Document" type="button" id="reqMenu1" data-toggle="dropdown">
@@ -119,7 +117,7 @@
                     <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="DFMEAMenu1">
-                      <li role="presentation"><a class="createDFMEA" role="menuitem" tabindex="-1" href="#">Create Blank (inactive)</a></li>
+                      <li role="presentation"><a class="createDFMEA" role="menuitem" tabindex="-1" href="#">Create Blank</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Copy From...(inactive)</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Import (inactive)</a></li>
                     </ul>
@@ -130,7 +128,7 @@
                     <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="PFMEAMenu1">
-                      <li role="presentation"><a class="createPFMEA" role="menuitem" tabindex="-1" href="#">Create Blank (inactive)</a></li>
+                      <li role="presentation"><a class="createPFMEA" role="menuitem" tabindex="-1" href="#">Create Blank</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Copy From...(inactive)</a></li>
                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Import (inactive)</a></li>
                     </ul>
@@ -142,8 +140,8 @@
 						<ul class="list-inline">
     						{{#each listOfDocuments}}
     						<li>
-       							<div>
-      	 							<a class="btn btn-default" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block DFMEAName">{{docName}}</span></a>
+       							<div class="documentIcon">
+      	 							<a class="btn btn-default" href="{{docLink}}" role="button"><div><small>{{docType}}</small></div><span class="glyphicon glyphicon-file big-glyphs"></span><span class="help-block DFMEAName"><small>{{docName}}</small></span></a>
       	 						</div>
       	 					</li>
       	 					{{/each}}
@@ -171,7 +169,8 @@
             					<form class="form-inline" role="form">
             					<div class="form-group">
               						<label class="sr-only" for="newProject">Name (or rename) the project</label>
-              						{{#if editingProjectName}}
+                          <div class="projectName">
+              						{{#if editing2}}
              							<input type="text" class="form-control project-name-input" id="project-name-input" value="{{getProjectName}}" placeholder="{{getProjectName}}" size="30">
               							<span class="help-block"></span>
               						{{else}}
@@ -179,6 +178,7 @@
               								{{getProjectName}}
               							</div>
               						{{/if}}
+                          </div>
              					</div>
             					</form>
         					</div>
@@ -199,10 +199,14 @@
 	      					</div>
       					</div>
       					<div class="col-sm-5">
-        					<form role="form">
-          					<div class="form-group">
+       					<form role="form">
+          					<div class="form-group projectDescr">
             					<label for="projectDescription"><h4>Project Description</h4></label>
-            					<input type="textarea" rows="6" class="form-control projectDescription" id="projectDescription" placeholder="{{projectDescription}}">
+                      {{#if editingDescription}}
+             					<input type="textarea" rows="6" class="form-control projectDescription" id="projectDescription" placeholder="{{projectDescription}}">
+                      {{else}}
+                      <p>{{projectDescription}}</p>
+                      {{/if}}
           					</div>
         					</form>
       					</div>
@@ -298,6 +302,5 @@
 		</div>
 		{{/if}}
 	</div>
-
 </div>
 </template>

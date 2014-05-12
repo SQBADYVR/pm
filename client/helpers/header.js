@@ -55,9 +55,15 @@ Template.header.helpers ({
 						return namedDocument.header.title;
 					else return "";
 					break;
+				case "PFMEA" :
+					var namedDocument=PFMEAs.findOne({_id:this.docID});
+					if (namedDocument && (namedDocument.header) && (namedDocument.header.title))
+						return namedDocument.header.title;
+					else return "";
+					break;
 				default: return "";
 			}
-			
+
 		}
 		return "";
 	},

@@ -40,6 +40,8 @@ var dfmeaSubscription=Meteor.subscribe('dfmeas');
 // ID of currently selected list
 Session.setDefault('currentProject', null);
 Session.setDefault('editingProject', null);
+Session.setDefault('editingProject2', null);
+Session.setDefault('editingDesc', null);
 
 var toggleAdmin=function(myRecord) {
 	if (Accounts.loginServicesConfigured())
@@ -180,7 +182,19 @@ Template.manageProject.helpers ({
 		return (Session.get("currentProject"));
 	},
 	editing: function() {
-		return Session.equals('editingProject', this._id);
+		if (Template.manageProject.adminsProject())
+			return Session.equals('editingProject', this._id);
+		return false;
+	},
+	editing2: function() {
+		if (Template.manageProject.adminsProject())
+			return Session.equals('editingProject2', Session.get('currentProject'));
+		return false;
+	},
+	editingDescription: function() {
+		if (Template.manageProject.adminsProject())
+			return Session.equals('editingDesc', Session.get('currentProject'));
+		return false;
 	},
 	selectedProject: function() {
 		return Session.equals("currentProject", this._id) ? "selectedProject" : "";
@@ -657,7 +671,7 @@ Template.manageProject.events(okCancelEvents(
   	 Session.set('editingProject',null);}
      }));
 Template.manageProject.events(okCancelEvents(
-  '#editingProjectName', 
+  '#project-name-input', 
   {
     ok: function (text, evt) {	
       if ((text) && Accounts.loginServicesConfigured())
@@ -665,10 +679,10 @@ Template.manageProject.events(okCancelEvents(
       	Projects.update({_id: Session.get('currentProject')},{$set: {projectName: text}});
       }
       evt.target.value='';
-      Session.set('editingProject',null);
+      Session.set('editingProject2',null);
   },
     cancel: function () {
-  	 Session.set('editingProject',null);}
+  	 Session.set('editingProject2',null);}
      }));
 Template.manageProject.events(okCancelEvents(
   '#projectDescription',
@@ -679,8 +693,10 @@ Template.manageProject.events(okCancelEvents(
       	Projects.update({_id: Session.get('currentProject')},{$set: {projectDescription: text}});
       }
       evt.target.value='';
+      Session.set('editingDesc',null);
   },
     cancel: function () {
+    	Session.set('editingDesc', null);
   	 }
      }));
 
@@ -690,6 +706,16 @@ Template.manageProject.events ({
     Session.set('currentProject', this._id);
     Deps.flush(); // force DOM redraw, so we can focus the edit field
     activateInput(tmpl.find("#editProjectName"));
+  },
+  'dblclick .projectDescr': function (evt, tmpl) { 
+    Session.set('editingDesc', Session.get("currentProject"));
+    Deps.flush(); // force DOM redraw, so we can focus the edit field
+    activateInput(tmpl.find("#projectDescription"));
+  },
+  'dblclick .projectName': function (evt, tmpl) { 
+    Session.set('editingProject2', Session.get("currentProject"));
+    Deps.flush(); // force DOM redraw, so we can focus the edit field
+    activateInput(tmpl.find("#project-name-input"));
   },
   'click .projectNames': function(evt) {
   	Session.set('currentProject',this._id);

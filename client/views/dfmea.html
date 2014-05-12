@@ -1,4 +1,6 @@
 <template name="dfmea">
+
+{{> RAILfmea}}
 {{updateRecentDocuments}}
 <div class="table-responsive">
 <table class="table table-condensed table-bordered">
@@ -153,7 +155,7 @@
 		</td>
 		<td class="ActionItems">
 			<div class="btn-group">
-	  			<button type="button" class="btn btn-default btn-xs btn-RAIL-add disabled" ><span title="Add new action item"   class="glyphicon glyphicon-plus"></span></button>
+	  			<button type="button" class="btn btn-default btn-xs btn-RAIL-add" data-toggle="modal" data-target="#fmeaActionItem"><span title="Add new action item"   class="glyphicon glyphicon-plus"></span></button>
 	  			{{#if RAILitems}}
   				<button type="button" class="btn btn-default btn-xs btn-RAIL-review" ><span title="Copy this {{nodeText}} and all dependent items" class="glyphicon glyphicon-list"></span></button>
   				{{/if}}

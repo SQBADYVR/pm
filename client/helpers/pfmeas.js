@@ -211,7 +211,7 @@ Template.pfmea.helpers ({
 			return (Session.equals('editing_itemname', this._id) && Template.pfmea.canEdit());
   },
   updateRecentDocuments: function() {
-    var currDoc=Session.get("currentDFMEA");
+    var currDoc=Session.get("currentPFMEA");
     //write the push statemt to timestamp it and insert or update.
     if(Accounts.loginServicesConfigured() && currDoc)
       {
@@ -232,7 +232,7 @@ Template.pfmea.helpers ({
       }
       else
       {
-        docList.unshift({docID: currDoc, docType: "DFMEA"});
+        docList.unshift({docID: currDoc, docType: "PFMEA"});
       }
       retval=docList.slice(0,10);
       Meteor.users.update({_id:Meteor.userId()}, {$set: {documentsVisited: retval}});
@@ -355,11 +355,11 @@ Template.pfmea.events(okCancelEvents(
 );
 
 Template.pfmea.events(okCancelEvents(
-  '#processControl-input',
+  '#processControlPrevention-input',
   {
     ok: function (text, evt) {
       PFMEAs.update({_id: this._id},{
-        $set: {processControl: text,
+        $set: {processControlPrevention: text,
         timestamp: (new Date()).getTime(),
       }});
       Session.set("editing_itemname", null);
@@ -371,6 +371,22 @@ Template.pfmea.events(okCancelEvents(
     }})
 );
 
+Template.pfmea.events(okCancelEvents(
+  '#processControlDetection-input',
+  {
+    ok: function (text, evt) {
+      PFMEAs.update({_id: this._id},{
+        $set: {processControlDetection: text,
+        timestamp: (new Date()).getTime(),
+      }});
+      Session.set("editing_itemname", null);
+      Session.set('editField',null);
+    },
+  cancel: function () {
+      Session.set('editing_itemname', null);
+      Session.set('editField',null);
+    }})
+);
 Template.pfmea.events(okCancelEvents(
   '#scope-input',
   {
@@ -437,11 +453,17 @@ Template.pfmea.events ({
     Deps.flush(); // update DOM before focus
     activateInput(tmpl.find("#class-input"));
   },
-   'click .processControl': function (evt, tmpl) {
+   'click .processControlPrevention': function (evt, tmpl) {
     Session.set('editing_itemname', this._id);
-    Session.set('editField',"processControl");
+    Session.set('editField',"processControlPrevention");
     Deps.flush(); // update DOM before focus
-    activateInput(tmpl.find("#processControl-input"));
+    activateInput(tmpl.find("#processControlPrevention-input"));
+  }, 
+  'click .processControlDetection': function (evt, tmpl) {
+    Session.set('editing_itemname', this._id);
+    Session.set('editField',"processControlDetection");
+    Deps.flush(); // update DOM before focus
+    activateInput(tmpl.find("#processControlDetection-input"));
   }, 
   'click .OCC': function (evt, tmpl) {
     Session.set('editing_itemname', this._id);
